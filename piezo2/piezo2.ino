@@ -37,26 +37,21 @@ void loop()
   int maxvol_1 = 0;
   int maxvol_2 = 0;
   
-  for (int k=0; k<RECLENGTH; ++k) {
     for (int i=0; i<RECLENGTH; ++i) {
       value = analogRead(piezo1);
       audio[i]=value;
       if (value > maxvol_1) maxvol_1 = value;
     }   
+    
     for (int j=0; j<RECLENGTH; ++j) {
       value = analogRead(piezo2);
       audio[j]=value;
       if (value > maxvol_2) maxvol_2 = value;
       }
-  }
 
-  Serial.print(0);
-  Serial.print(1);
-  Serial.print(2);
   Serial.print(maxvol_1);
-  Serial.print(3);
-  Serial.print(4);
-  Serial.print(5);
-  Serial.print(maxvol_3);
+  Serial.print(',');
+  Serial.print(maxvol_2);
+  Serial.print(';');
   
 }
