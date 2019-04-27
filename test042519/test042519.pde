@@ -11,7 +11,7 @@ int maxvol_2;
 
 void setup() {
   background(255,255,255);
-  size(1600, 1000);
+  size(1000, 800);
   
   // List all the available serial ports
   printArray(Serial.list());
@@ -25,7 +25,7 @@ void setup() {
 }
 
 void draw() {
-  background(255);
+  //background(255);
   while (myPort.available() > 0) {
     myString = myPort.readStringUntil(rU);
     if (myString != null) {
@@ -43,12 +43,12 @@ void draw() {
           }
           
           float mapValue1 = map( (float) maxvol_1, 513, 1023, 0, 1);
-          fill(0);
-          ellipse(width*0.10, height*0.5, mapValue1 * 1000, mapValue1 * 1000);
+          fill(0, 100);
+          ellipse(width*0.90, height*0.5, mapValue1 * 1000, mapValue1 * 1000);
 
           float mapValue2 = map( (float) maxvol_2, 513, 1023, 0, 1);
-          fill(0);
-          ellipse(width*0.90, height*0.5, mapValue2 * 1000, mapValue2 * 1000);
+          fill(0, 100);
+          ellipse(width*0.10, height*0.5, mapValue2 * 1000, mapValue2 * 1000);
           
           int plotMax;
           if(maxvol_1 > maxvol_2){
@@ -61,8 +61,8 @@ void draw() {
           float diff = maxvol_1 - maxvol_2;
           float mapDiff = map(diff, 511, -511, width*0.1, width*0.9);
           
-          fill(255,192,203);
-          ellipse( (width*0.1 + mapDiff), height*0.5, mplotMax * 1000, mplotMax * 1000);
+          fill(255,192,203, 100);
+          ellipse( (mapDiff), height*0.5, mplotMax * 1000, mplotMax * 1000);
           
           
           //int dis1 = (width*0.10) - (width*0.90
