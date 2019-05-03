@@ -31,7 +31,7 @@ void setup() {
   // List all the available serial ports
   printArray(Serial.list());
   // Open the port you are using at the rate you want:
-  myPort = new Serial(this, Serial.list()[1], 9600);
+  myPort = new Serial(this, Serial.list()[3], 9600);
   myPort.clear();
   // Throw out the first reading, in case we started reading
   // in the middle of a string from the sender.
@@ -44,6 +44,7 @@ Boolean readNextValues() {
   
   myString = myPort.readStringUntil(rU);
   if (myString == null) return false;
+  //println(myString);
   
   myString = myString.trim();
   // split the string at the tabs then convert the sections into integers:
@@ -52,7 +53,7 @@ Boolean readNextValues() {
   
   if (mysensors[0] == null || mysensors[1] == null) return false;
           
-        printArray(mysensors);
+        //printArray(mysensors);
         
         try{
           maxvol_1 = Integer.parseInt(mysensors[0]);
@@ -68,9 +69,10 @@ Boolean readNextValues() {
     if (mysensors.length>2) {
       s.wave1=new ArrayList<Float>();
       s.wave2=new ArrayList<Float>();
-      
+           
       int num=(mysensors.length-2)/2;
       int ri=2;
+      //print("num: ");
       //println(num);
       for(int i=0; i<num; ++i) {
         s.wave1.add(Integer.parseInt(mysensors[ri])/1023.0f);
@@ -79,7 +81,8 @@ Boolean readNextValues() {
         ++ri;
       }
     }
-    println(s); // check how many values are in the wave1 and wave2 arrayLists       
+    //print("wave 1: ");
+    //printArray(s.wave1);
     samples.add(s);
     
     if (samples.size()>800) samples.remove(0);
@@ -103,31 +106,37 @@ void draw() {
    
    for(int i=1; i<num; ++i) {
      Sample s=samples.get(samples.size()-i);
-     
-      //fill(0,0,0, 2);
-      //ellipse(width*0.2, height*0.5, s.v1*scale, s.v1*scale);
       
-      //ellipse(width*0.8, height*0.5, s.v2*scale, s.v2*scale);
-
-     int num2=((s.wave1.length + s.wave2.length)-2)/2;
-     for(i = 0; i < num2; i++){
+     int num2 = s.wave1.size();
+     float step = height / num2;
+     //print("num2: ");
+     //println(num2);
+     
+     for(int j = 0; j < num2; j++){
       //left column
-      float b1 = map(s.wave1[i], 0, 1, 0, 255);
-      fill(0,0,0, b1);
-      line(0, (height/num2)*i, width/2, (height/num2)*(i+1));
+      float reading1 = s.wave1.get(j);
+      float b1 = map(reading1, 0, 1, 0, 255);
+      fill(b1);
+      rect(0, 0+j*step, width/2, step);
       
       // right column
-      float b2 = map(s.wave2[i], 0, 1, 0, 255);
-      fill(0,0,0, b2);
-      line(width/2, (height/num2)*i, width, (height/num2)*(i+1));
+      float reading2 = s.wave2.get(j);
+      float b2 = map(reading2, 0, 1, 0, 255);
+      fill(b2);
+      rect(width/2, 0+j*step, width/2, step);
      }
+     
+     fill(0,0,0, 2);
+     ellipse(width*0.2, height*0.5, s.v1*scale, s.v1*scale);
       
-      float dif=s.v2-s.v1;
-      float amp = (s.v1+s.v2)*0.5f;
-      float difn = dif/amp;
+     ellipse(width*0.8, height*0.5, s.v2*scale, s.v2*scale);
       
-      //fill(255,0,203, 2);
-       //ellipse(width*0.5 + difn*1000.0, height*0.5, amp*scale, amp*scale);
+     float dif=s.v2-s.v1;
+     float amp = (s.v1+s.v2)*0.5f;
+     float difn = dif/amp;
+      
+     fill(255,0,203, 2);
+     ellipse(width*0.5 + difn*1000.0, height*0.5, amp*scale, amp*scale);
    }
 
   float xscale=width/(float)samples.size();
