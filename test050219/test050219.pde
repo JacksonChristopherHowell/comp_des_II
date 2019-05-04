@@ -8,7 +8,7 @@ int maxvol_1;
 int maxvol_2;
 //int b = 512; //lowest reading of piezo, can change to 512
 //int scl = 500; //scalar
-
+float baseline=0.0f;
 
 class Sample{
   public Sample(float v1_, float v2_) {
@@ -75,10 +75,14 @@ Boolean readNextValues() {
       //print("num: ");
       //println(num);
       for(int i=0; i<num; ++i) {
-        s.wave1.add(Integer.parseInt(mysensors[ri])/1023.0f);
+        float w1=Integer.parseInt(mysensors[ri])/1023.0f;
+        s.wave1.add(w1);
         ++ri;
-        s.wave2.add(Integer.parseInt(mysensors[ri])/1023.0f);
+        float w2=Integer.parseInt(mysensors[ri])/1023.0f;
+        s.wave2.add(w2);
         ++ri;
+        
+        baseline=baseline*0.95f+(w1+w2)*0.5f*0.05f;
       }
     }
     //print("wave 1: ");
@@ -86,12 +90,14 @@ Boolean readNextValues() {
     samples.add(s);
     
     if (samples.size()>800) samples.remove(0);
+    
+    //println(baseline);
    
     return true;
 }
 
 void draw() {
-  background(255);
+  background(0);
   
   while(readNextValues()) {
   }
@@ -104,6 +110,23 @@ void draw() {
    
    stroke(0, 0, 0, 10);
    
+   
+   Sample s0=samples.get(samples.size()-1);
+   float dy=height/(float)s0.wave1.size();
+   for(int i=0; i<s0.wave1.size(); ++i) {
+      float reading1 = s0.wave1.get(i);
+      float b1 = (reading1-baseline)*5800.0f;
+      fill(255);
+      rect(0, i*dy, width/2, dy*(reading1-baseline));
+      
+      // right column
+      float reading2 = s0.wave2.get(i);
+      float b2 = (reading2-baseline)*5800.0f;
+      fill(255);
+      rect(width/2, i*dy, width/2, dy*(reading2-baseline));
+   }
+   
+   /*
    for(int i=1; i<num; ++i) {
      Sample s=samples.get(samples.size()-i);
       
@@ -126,17 +149,17 @@ void draw() {
       rect(width/2, 0+j*step, width/2, step);
      }
      
-     fill(0,0,0, 2);
-     ellipse(width*0.2, height*0.5, s.v1*scale, s.v1*scale);
+     //fill(0,0,0, 2);
+     //ellipse(width*0.2, height*0.5, s.v1*scale, s.v1*scale);
       
-     ellipse(width*0.8, height*0.5, s.v2*scale, s.v2*scale);
+     //ellipse(width*0.8, height*0.5, s.v2*scale, s.v2*scale);
       
-     float dif=s.v2-s.v1;
-     float amp = (s.v1+s.v2)*0.5f;
-     float difn = dif/amp;
+     //float dif=s.v2-s.v1;
+     //float amp = (s.v1+s.v2)*0.5f;
+     //float difn = dif/amp;
       
-     fill(255,0,203, 2);
-     ellipse(width*0.5 + difn*1000.0, height*0.5, amp*scale, amp*scale);
+     //fill(255,0,203, 2);
+     //ellipse(width*0.5 + difn*1000.0, height*0.5, amp*scale, amp*scale);
    }
 
   float xscale=width/(float)samples.size();
@@ -156,5 +179,5 @@ void draw() {
   for(int i=0; i<samples.size(); ++i) {
     vertex(i*xscale, height*0.5-samples.get(i).v2*200.0);
   }
-  endShape();
+  endShape();*/
 }
