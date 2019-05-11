@@ -97,7 +97,7 @@ Boolean readNextValues() {
 }
 
 void draw() {
-  background(0);
+  background(0,0,0,255);
   
   while(readNextValues()) {
   }
@@ -111,7 +111,7 @@ void draw() {
    stroke(0, 0, 0, 10);
    
    
-   Sample s0=samples.get(samples.size()-1);
+   /*Sample s0=samples.get(samples.size()-1);
    float dy=height/(float)s0.wave1.size();
    for(int i=0; i<s0.wave1.size(); ++i) {
       float reading1 = s0.wave1.get(i);
@@ -124,7 +124,40 @@ void draw() {
       float b2 = (reading2-baseline)*5800.0f;
       fill(255);
       rect(width/2, i*dy, width/2, dy*(reading2-baseline));
-   }
+   }*/
+   
+   //Sample s0=samples.get(samples.size()-1);
+   //float dx=0.5f*width/(float)s0.wave1.size();
+   //float dy=height;
+   //for(int i=0; i<s0.wave1.size(); ++i) {
+   //   float reading1 = s0.wave1.get(i);
+   //   float b1 = (reading1-baseline)*5800.0f;
+   //   fill(255);
+   //   rect(i*dx, 0, dx, dy*(reading1-baseline));
+      
+   //   // right column
+   //   float reading2 = s0.wave2.get(i);
+   //   float b2 = (reading2-baseline)*5800.0f;
+   //   fill(255);
+   //   rect(width/2+i*dx, 0, dx, dy*(reading2-baseline));
+   //}
+   
+   
+   //  Sample s0=samples.get(samples.size()-1);
+   //float dx=0.5f*width/(float)s0.wave1.size();
+   //float dy=height;
+   //for(int i=0; i<s0.wave1.size(); ++i) {
+   //   float reading1 = s0.wave1.get(i);
+   //   float b1 = (reading1-baseline)*5800.0f;
+   //   fill(255);
+   //   rect(i*dx, 0, dx*(reading1-baseline), dy);
+      
+   //   // right column
+   //   float reading2 = s0.wave2.get(i);
+   //   float b2 = (reading2-baseline)*5800.0f;
+   //   fill(255);
+   //   rect(width/2+i*dx, 0, dx*(reading2-baseline), dy);
+   //}
    
    /*
    for(int i=1; i<num; ++i) {
