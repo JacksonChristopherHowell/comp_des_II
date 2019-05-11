@@ -10,7 +10,7 @@ const byte txPin = 1; //the pin on which to transmit serial data.
 SoftwareSerial Serial(rxPin, txPin);
 
 
-#define RECLENGTH  24
+#define RECLENGTH  32
  short audio_1[RECLENGTH];
  short audio_2[RECLENGTH];
 
@@ -33,19 +33,13 @@ void setup()
   }
 }
 
-//#define OUTPUTREC
+#define OUTPUTREC
 
 
 void loop()
 {
-
-  //int value_1;
-  //int value_2;
-
    short maxvol_1 = 0;
    short maxvol_2 = 0;
-  //int n = 0;
-  //int m = 0;
   
     for (int i=0; i < RECLENGTH; ++i) {
       audio_1[i] = analogRead(piezo_1);
@@ -53,26 +47,6 @@ void loop()
 
         if (audio_1[i] > maxvol_1) maxvol_1 = audio_1[i];
         if (audio_2[i] > maxvol_2) maxvol_2 = audio_2[i];
-      
-/*      if (i%2 == 0) {
-        value_1 = analogRead(piezo_1);
-        int q = i - (i - n); 
-        //        2-2=0 i-(i-0) the final column in pattern becomes n
-        //        4-3=1 i-(i-1)
-        //        6-4=2 i-(i-2)
-        audio_1[q]=value_1;
-        if (value_1 > maxvol_1) maxvol_1 = value_1;
-        n++;
-      }
-      else if (i%2 == 1) {
-        value_2 = analogRead(piezo_2);
-        int r = i - (i - m);
-        //        1-1=0 i-(i-0) the final column in pattern becomes m
-        //        3-2=1 i-(i-1)
-        //        5-3=2 i-(i-2)
-        audio_2[r]  = value_2;
-        if (value_2 > maxvol_2) maxvol_2 = value_2;
-      }*/
     }   
 
    
@@ -91,15 +65,7 @@ void loop()
     }
 
 #endif
-
   
   Serial.print(';');
-
-//  value_1 = analogRead(piezo_1);
-//  value_2 = analogRead(piezo_2);
-//  Serial.print(value_1);
-//  Serial.print(',');
-//  Serial.print(value_2);
-//  Serial.print(';');
   
 }

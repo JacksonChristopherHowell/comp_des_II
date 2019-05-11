@@ -1,5 +1,7 @@
 import processing.serial.*;
 
+int numLines = 15;
+
 //int lf = 10;    // Linefeed
 int rU = 59; //59 is ";" in ASCII
 String myString = null;
@@ -26,8 +28,13 @@ class Sample{
 ArrayList<Sample> samples = new ArrayList<Sample>();
 
 void setup() {
-  background(255,255,255);
-  size(1000, 700);
+  //background(255,255,255);
+  //size(1000, 700);
+  
+  fullScreen();
+  background(0);
+  stroke(255);
+  fill(255); 
   
   // List all the available serial ports
   printArray(Serial.list());
@@ -94,7 +101,9 @@ Boolean readNextValues() {
 }
 
 void draw() {
-  background(255);
+  //background(255);
+  background(0);
+  strokeCap(PROJECT);
   
   while(readNextValues()) {
   }
@@ -105,22 +114,32 @@ void draw() {
    
    int num=Math.min(samples.size(), 20);
    
-   stroke(0, 0, 0, 10);
+   //stroke(0, 0, 0, 10);
    
    for(int i=1; i<num; ++i) {
      Sample s=samples.get(samples.size()-i);
      
-      fill(0,0,0, 2);
-      ellipse(width*0.2, height*0.5, s.v1*scale, s.v1*scale);
+      //fill(0,0,0, 2);
+      //ellipse(width*0.2, height*0.5, s.v1*scale, s.v1*scale);
       
-      ellipse(width*0.8, height*0.5, s.v2*scale, s.v2*scale);
+      //ellipse(width*0.8, height*0.5, s.v2*scale, s.v2*scale);
       
       float dif=s.v2-s.v1;
       float amp = (s.v1+s.v2)*0.5f;
       float difn = dif/amp;
       
-      fill(255,0,203, 2);
-       ellipse(width*0.5 + difn*1000.0, height*0.5, amp*scale, amp*scale);
+      //fill(255,0,203, 2);
+      //ellipse(width*0.5 + difn*1000.0, height*0.5, amp*scale, amp*scale);
+      
+      for(int j = 0; j < numLines; j++) {
+        float x = (j+1) * ((float) width/(numLines+1));
+        float distFromCenter = dist(x, 0, width/2, 0);
+        float waveOffset = map(distFromCenter, 0, width/2, 0, 100);
+        float wave = 20 * sin((PI / 2)* sin((-frameCount + waveOffset) / 40.0)) + difn*100.0;
+        stroke(255);
+        strokeWeight(abs(wave));
+        line(x, -500, x, height+400);
+      }
    }
 
 
