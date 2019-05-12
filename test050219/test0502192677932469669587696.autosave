@@ -6,9 +6,9 @@ Serial myPort;
 int sensorValue;  
 int maxvol_1;
 int maxvol_2;
-//int b = 512; //lowest reading of piezo, can change to 512
+float b = 0.5; //lowest reading of piezo, can change to 512
 //int scl = 500; //scalar
-float baseline=0.0f;
+//float baseline=0.0f;
 
 class Sample{
   public Sample(float v1_, float v2_) {
@@ -26,13 +26,13 @@ ArrayList<Sample> samples = new ArrayList<Sample>();
 
 void setup() {
   background(255,255,255);
-  //size(1000, 700);
-  fullScreen();
+  size(1000, 700);
+  //fullScreen();
   
   // List all the available serial ports
   printArray(Serial.list());
   // Open the port you are using at the rate you want:
-  myPort = new Serial(this, Serial.list()[3], 19200);
+  myPort = new Serial(this, Serial.list()[1], 9600);
   myPort.clear();
   // Throw out the first reading, in case we started reading
   // in the middle of a string from the sender.
@@ -76,14 +76,18 @@ Boolean readNextValues() {
       //print("num: ");
       //println(num);
       for(int i=0; i<num; ++i) {
-        float w1=Integer.parseInt(mysensors[ri])/1023.0f;
+        //float w1=Integer.parseInt(mysensors[ri])/1023.0f;
+        float w1=Integer.parseInt(mysensors[ri]);
+        //println(Integer.parseInt(mysensors[ri]));
         s.wave1.add(w1);
         ++ri;
-        float w2=Integer.parseInt(mysensors[ri])/1023.0f;
+        //float w2=Integer.parseInt(mysensors[ri])/1023.0f;
+        float w2=Integer.parseInt(mysensors[ri]);
+        //println(Integer.parseInt(mysensors[ri]));
         s.wave2.add(w2);
         ++ri;
         
-        baseline=baseline*0.95f+(w1+w2)*0.5f*0.05f;
+        //baseline=baseline*0.95f+(w1+w2)*0.5f*0.05f;
       }
     }
     //print("wave 1: ");
@@ -144,44 +148,63 @@ void draw() {
    //}
    
    
-     Sample s0=samples.get(samples.size()-1);
+   Sample s0=samples.get(samples.size()-1);
    float dx=0.5f*width/(float)s0.wave1.size();
    float dy=height;
    for(int i=0; i<s0.wave1.size(); ++i) {
       float reading1 = s0.wave1.get(i);
-      float b1 = (reading1-baseline)*5800.0f;
+      //float b1 = (reading1-baseline)*5800.0f;
+      //float b1 = (reading1-b);
+      //if (b1<0) b1=0;
+      //b1 = map(b1, 0, 0.5, 0, 1);
+      //fill(255);
+      //rect(i*dx, 0, dx*(b1), dy);
+      
+      reading1 = map(reading1, 0, 1023, 0, dx);
       fill(255);
-      rect(i*dx, 0, dx*(reading1-baseline), dy);
+      rect(i*dx, 0, reading1, dy);
       
       // right column
       float reading2 = s0.wave2.get(i);
-      float b2 = (reading2-baseline)*5800.0f;
+      //float b2 = (reading2-baseline)*5800.0f;
+      //float b2 = (reading2-b);
+      //if (b2<0) b2=0;
+      //b2 = map(b2, 0, 0.5, 0, 1);
+      //println(b2);
+      //fill(255);
+      //rect(width/2+i*dx, 0, dx*(b2), dy);
+      
+      reading2 = map(reading2, 0, 1023, 0, dx);
       fill(255);
-      rect(width/2+i*dx, 0, dx*(reading2-baseline), dy);
+      rect(i*dx, 0, reading2, dy);
+      
+      //println(frameRate);
    }
    
-   /*
-   for(int i=1; i<num; ++i) {
-     Sample s=samples.get(samples.size()-i);
+   
+   //for(int i=1; i<num; ++i) {
+   //  Sample s=samples.get(samples.size()-i);
       
-     int num2 = s.wave1.size();
-     float step = height / num2;
-     //print("num2: ");
-     //println(num2);
+   //  int num2 = s.wave1.size();
+   //  float step = height / num2;
+   //  //print("num2: ");
+   //  //println(num2);
      
-     for(int j = 0; j < num2; j++){
-      //left column
-      float reading1 = s.wave1.get(j);
-      float b1 = map(reading1, 0, 1, 0, 255);
-      fill(b1);
-      rect(0, 0+j*step, width/2, step);
+   //  for(int j = 0; j < num2; j++){
+   //   //left column
+   //   float reading1 = s.wave1.get(j);
+   //   float b1 = map(reading1, 0, 1, 0, 255);
+   //   fill(b1);
+   //   rect(0, 0+j*step, width/2, step);
       
-      // right column
-      float reading2 = s.wave2.get(j);
-      float b2 = map(reading2, 0, 1, 0, 255);
-      fill(b2);
-      rect(width/2, 0+j*step, width/2, step);
-     }
+   //   // right column
+   //   float reading2 = s.wave2.get(j);
+   //   float b2 = map(reading2, 0, 1, 0, 255);
+   //   fill(b2);
+   //   rect(width/2, 0+j*step, width/2, step);
+   //  }
+     
+     
      
      //fill(0,0,0, 2);
      //ellipse(width*0.2, height*0.5, s.v1*scale, s.v1*scale);
@@ -196,22 +219,22 @@ void draw() {
      //ellipse(width*0.5 + difn*1000.0, height*0.5, amp*scale, amp*scale);
    }
 
-  float xscale=width/(float)samples.size();
+  //float xscale=width/(float)samples.size();
 
-  noFill();
-  stroke(204, 0, 0, 100);
-  beginShape();
+  //noFill();
+  //stroke(204, 0, 0, 100);
+  //beginShape();
   
-  for(int i=0; i<samples.size(); ++i) {
-    vertex(i*xscale, height*0.5+samples.get(i).v1*200.0);
-  }
-  endShape();
+  //for(int i=0; i<samples.size(); ++i) {
+  //  vertex(i*xscale, height*0.5+samples.get(i).v1*200.0);
+  //}
+  //endShape();
   
-  stroke(20, 0, 205, 100);
-  beginShape();
+  //stroke(20, 0, 205, 100);
+  //beginShape();
   
-  for(int i=0; i<samples.size(); ++i) {
-    vertex(i*xscale, height*0.5-samples.get(i).v2*200.0);
-  }
-  endShape();*/
-}
+  //for(int i=0; i<samples.size(); ++i) {
+  //  vertex(i*xscale, height*0.5-samples.get(i).v2*200.0);
+  //}
+  //endShape();
+//}

@@ -10,9 +10,9 @@ const byte txPin = 1; //the pin on which to transmit serial data.
 SoftwareSerial Serial(rxPin, txPin);
 
 
-#define RECLENGTH  32
- short audio_1[RECLENGTH];
- short audio_2[RECLENGTH];
+//#define RECLENGTH  64
+ short audio_1;
+ short audio_2;
 
 void setup()
 {
@@ -21,16 +21,16 @@ void setup()
   pinMode (txPin, OUTPUT);
 
   //set data rate
-  Serial.begin(9600);
+  Serial.begin(19200);
 
   //clear memory of array
-  for(int i=0; i<RECLENGTH; ++i) {
-    audio_1[i]=0;
-  }
-  
-  for(int j=0; j<RECLENGTH; ++j) {
-    audio_2[j]=0;
-  }
+//  for(int i=0; i<RECLENGTH; ++i) {
+//    audio_1[i]=0;
+//  }
+//  
+//  for(int j=0; j<RECLENGTH; ++j) {
+//    audio_2[j]=0;
+//  }
 }
 
 #define OUTPUTREC
@@ -38,34 +38,38 @@ void setup()
 
 void loop()
 {
-   short maxvol_1 = 0;
-   short maxvol_2 = 0;
+   //short maxvol_1 = 0;
+   //short maxvol_2 = 0;
   
-    for (int i=0; i < RECLENGTH; ++i) {
-      audio_1[i] = analogRead(piezo_1);
-      audio_2[i] = analogRead(piezo_2);
+    //for (int i=0; i < RECLENGTH; ++i) {
+      audio_1 = analogRead(piezo_1);
+      Serial.print(audio_1);
+      Serial.print(',');
+      audio_2 = analogRead(piezo_2);
+      Serial.print(audio_2);
+      Serial.print(';');
+      delay(20);
 
-        if (audio_1[i] > maxvol_1) maxvol_1 = audio_1[i];
-        if (audio_2[i] > maxvol_2) maxvol_2 = audio_2[i];
-    }   
+        //if (audio_1[i] > maxvol_1) maxvol_1 = audio_1[i];
+        //if (audio_2[i] > maxvol_2) maxvol_2 = audio_2[i];
+   // }   
 
    
 
-  Serial.print(maxvol_1);
-  Serial.print(',');
-  Serial.print(maxvol_2);
+  //Serial.print(maxvol_1);
+  //Serial.print(',');
+  //Serial.print(maxvol_2);
 
-#ifdef OUTPUTREC
+//#ifdef OUTPUTREC
+//  
+//    for(int i=0; i<RECLENGTH; ++i) {
+//      Serial.print(',');
+//      Serial.print(audio_1[i]);
+//      Serial.print(',');
+//      Serial.print(audio_2[i]);
+//    }
+//
+//#endif
   
-    for(int i=0; i<RECLENGTH; ++i) {
-      Serial.print(',');
-      Serial.print(audio_1[i]);
-      Serial.print(',');
-      Serial.print(audio_2[i]);
-    }
-
-#endif
-  
-  Serial.print(';');
-  
+  //delay(200);
 }
