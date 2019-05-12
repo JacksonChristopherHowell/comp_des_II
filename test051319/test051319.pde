@@ -6,8 +6,6 @@ Serial myPort;
 int sensorValue;  
 int maxvol_1;
 int maxvol_2;
-//int b = 512; //lowest reading of piezo, can change to 512
-//int scl = 500; //scalar
 float baseline=0.0f;
 
 ArrayList<Float> wave1 = new ArrayList<Float>();
@@ -39,8 +37,13 @@ void draw() {
       //println(myString);
 
       // split the string at the tabs then convert the sections into integers:
-      String mysensors[] = splitTokens(myString, " , ; ");
-      if (mysensors!=null || mysensors.length>1) {
+      String mysensors[];
+      mysensors = splitTokens(myString, " , ; ");
+      println(mysensors[0]);
+      println(mysensors[1]);
+      println("");
+      if (mysensors.length>1) {
+        //println("made it here");
         try {
           maxvol_1 = Integer.parseInt(mysensors[0]);
           maxvol_2 = Integer.parseInt(mysensors[1]);
@@ -72,7 +75,7 @@ void draw() {
   float dx=0.5f*width/(float)waveSize;
   float dy=height;
   
-  println(waveSize);
+  //println(waveSize);
 
   for (int i=0; i< waveSize-1; ++i) {
     float reading1 = wave1.get(i);
@@ -84,46 +87,8 @@ void draw() {
     fill(255);
     rect(width/2+i*dx, 0, dx*(reading2-baseline), dy);
   }
-
-  /*
-   for(int i=1; i<num; ++i) {
-   Sample s=samples.get(samples.size()-i);
-   
-   int num2 = s.wave1.size();
-   float step = height / num2;
-   //print("num2: ");
-   //println(num2);
-   
-   for(int j = 0; j < num2; j++){
-   //left column
-   float reading1 = s.wave1.get(j);
-   float b1 = map(reading1, 0, 1, 0, 255);
-   fill(b1);
-   rect(0, 0+j*step, width/2, step);
-   
-   // right column
-   float reading2 = s.wave2.get(j);
-   float b2 = map(reading2, 0, 1, 0, 255);
-   fill(b2);
-   rect(width/2, 0+j*step, width/2, step);
-   }
-   
-   //fill(0,0,0, 2);
-   //ellipse(width*0.2, height*0.5, s.v1*scale, s.v1*scale);
-   
-   //ellipse(width*0.8, height*0.5, s.v2*scale, s.v2*scale);
-   
-   //float dif=s.v2-s.v1;
-   //float amp = (s.v1+s.v2)*0.5f;
-   //float difn = dif/amp;
-   
-   //fill(255,0,203, 2);
-   //ellipse(width*0.5 + difn*1000.0, height*0.5, amp*scale, amp*scale);
-   }
-   
-   float xscale=width/(float)samples.size();
-   
-   noFill();
+  
+   /*noFill();
    stroke(204, 0, 0, 100);
    beginShape();
    
